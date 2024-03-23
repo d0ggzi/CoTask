@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "backend-react-project"
+version = "0.1.0"
+description = ""
+authors = ["Maksim Laptev <maks-laptev.03@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+passlib = "^1.7.4"
+sqlalchemy = "^2.0.28"
+fastapi = "^0.110.0"
+pyjwt = "^2.8.0"
+pydantic-settings = "^2.2.1"
+psycopg2-binary = "^2.9.9"
+psycopg = "^3.1.18"
+black = "^24.3.0"
+uvicorn = "^0.29.0"
+python-multipart = "^0.0.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
