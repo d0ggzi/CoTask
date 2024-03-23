@@ -14,20 +14,19 @@ services:
     networks:
       - app-network
 
-#  server:
-#    image: myimage/app:latest
-#    build:
-#      context: .
-#      dockerfile: docker/server/Dockerfile
-#    volumes:
-#      - .:/opt/app
-#    ports:
-#      - "8000:8000"
-#    restart: always
-#    networks:
-#      - app-network
-#    depends_on:
-#      - db
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/opt/app
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - app-network
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
