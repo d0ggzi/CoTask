@@ -1,44 +1,39 @@
 import datetime as _dt
+from typing import Optional
 
 import pydantic as _pydantic
 
 
 class _UserBase(_pydantic.BaseModel):
     email: str
+    fullname: str
+    position: str
+    team: str
 
 
 class UserCreate(_UserBase):
     hashed_password: str
 
-    class Config:
-        orm_mode = True
-
 
 class User(_UserBase):
     id: int
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
+
+class Dashboard(_pydantic.BaseModel):
+    name: str
 
 
-class _LeadBase(_pydantic.BaseModel):
-    first_name: str
-    last_name: str
-    email: str
-    company: str
-    note: str
+class Task(_pydantic.BaseModel):
+    name: str
+    current_status: str
+    complete_percent: int
+    description: str
+    start_date: _dt.datetime
+    end_date: _dt.datetime
+    fact_end_date: Optional[_dt.datetime] = None
+    duration: float
 
 
-class LeadCreate(_LeadBase):
-    pass
+class Team(_pydantic.BaseModel):
+    name: str
 
-
-class Lead(_LeadBase):
-    id: int
-    owner_id: int
-    date_created: _dt.datetime
-    date_last_updated: _dt.datetime
-
-    class Config:
-        orm_mode = True

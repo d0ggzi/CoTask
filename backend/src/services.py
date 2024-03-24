@@ -1,67 +1,69 @@
 import fastapi
 import fastapi.security as _security
 
-import database
-import sqlalchemy.orm as _orm
-import models
+from database import db
 import schemas
-import passlib.hash as _hash
 import jwt
 from config import settings
 
-
 oauth2schema = _security.OAuth2PasswordBearer(tokenUrl="/api/token")
 
-def create_database():
-    return database.Base.metadata.create_all(bind=database.engine)
 
-
-def get_db():
-    db = database.SessionLocal()
+async def get_user_by_email(email: str) -> schemas.User | bool:
     try:
-        yield db
-    finally:
-        db.close()
+        db_id, db_email, fullname, position, team_name = db.get_user(email)
+        user = schemas.User(id=db_id, email=db_email, fullname=fullname, position=position, team=team_name)
+        return user
+    except Exception as e:
+        print(e)
+        return False
 
 
-async def get_user_by_email(email: str, db: _orm.Session):
-    return db.query(models.User).filter(models.User.email == email).first()
+async def create_user(user: schemas.UserCreate):
+    user_db = db.reg_user(email=user.email, password=user.hashed_password, fullname=user.fullname, position=user.position)
+    team_id = db.get_team_by_name(user.team)
+    db.create_user_team(user_db, team_id)
+    return user_db
 
 
-async def create_user(user: schemas.UserCreate, db: _orm.Session):
-    user_obj = models.User(
-        email=user.email, hashed_password=_hash.bcrypt.hash(user.hashed_password)
-    )
-    db.add(user_obj)
-    db.commit()
-    db.refresh(user_obj)
-
-    return user_obj
-
-
-async def authenticate_user(email: str, password: str, db: _orm.Session):
-    user = await get_user_by_email(email, db)
+async def authenticate_user(email: str, password: str) -> schemas.User | bool:
+    user = await get_user_by_email(email)
     if not user:
         return False
-    if not user.verify_password(password):
+    if not db.login(email, password):
         return False
 
     return user
 
 
-async def create_token(user: models.User):
-    user_obj = schemas.User.from_orm(user)
-
-    token = jwt.encode(user_obj.dict(), settings.JWT_SECRET)
+async def create_token(user: schemas.User):
+    token = jwt.encode(user.dict(), settings.JWT_SECRET)
 
     return dict(access_token=token, token_type="bearer")
 
 
-async def get_current_user(db: _orm.Session = fastapi.Depends(get_db), token: str = fastapi.Depends(oauth2schema)):
+async def get_current_user(token: str = fastapi.Depends(oauth2schema)) -> schemas.User:
     try:
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
-        user = db.query(models.User).get(payload["id"])
-    except:
+        user = await get_user_by_email(email=payload["email"])
+        if not user:
+            raise Exception("Bad credentials")
+    except Exception as e:
         raise fastapi.HTTPException(status_code=401, detail="Could not validate credentials")
 
-    return schemas.User.from_orm(user)
+    return user
+
+
+async def get_team_tasks(user: schemas.User):
+    tasks = []
+
+    team_id = db.get_team_by_user_id(user.id)
+    tasks_from_db = db.get_team_tasks(team_id)
+
+    for el in tasks_from_db:
+        task = schemas.Task(name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
+                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8])
+        print(task)
+        tasks.append(task)
+
+    return tasks
