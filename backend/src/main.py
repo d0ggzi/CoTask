@@ -79,6 +79,11 @@ async def get_tasks(user=fastapi.Depends(_services.get_current_user)):
     return await _services.get_team_tasks(user)
 
 
+@app.get("/api/data/teams")
+async def get_teams():
+    return await _services.get_teams()
+
+
 @app.get("/api/parse")
 async def parse():
     from excelParser import parseExcelTasks

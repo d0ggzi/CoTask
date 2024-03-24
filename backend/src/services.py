@@ -20,7 +20,8 @@ async def get_user_by_email(email: str) -> schemas.User | bool:
 
 
 async def create_user(user: schemas.UserCreate):
-    user_db = db.reg_user(email=user.email, password=user.hashed_password, fullname=user.fullname, position=user.position)
+    user_db = db.reg_user(email=user.email, password=user.hashed_password, fullname=user.fullname,
+                          position=user.position)
     team_id = db.get_team_by_name(user.team)
     db.create_user_team(user_db, team_id)
     return user_db
@@ -52,6 +53,10 @@ async def get_current_user(token: str = fastapi.Depends(oauth2schema)) -> schema
         raise fastapi.HTTPException(status_code=401, detail="Could not validate credentials")
 
     return user
+
+
+async def get_teams():
+    return db.get_teams()
 
 
 async def get_team_tasks(user: schemas.User):

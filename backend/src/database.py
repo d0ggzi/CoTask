@@ -176,6 +176,13 @@ class SQL:
             result = self.cursor.fetchall()
             return result
 
+    def get_teams(self):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT name FROM teams"
+            )
+            result = self.cursor.fetchall()
+            return result
     #
     # def get_task_lists(self, user_id: int) -> (bool, Dict[Any, Any]):
     #     with self.conn:
