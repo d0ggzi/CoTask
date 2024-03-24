@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS users
     email VARCHAR(50) NOT NULL UNIQUE,
     password TEXT        NOT NULL,
     fullname VARCHAR(100) NOT NULL,
-    position VARCHAR(100)
+    position VARCHAR(100),
+    color VARCHAR(10)
 );
 
 CREATE TABLE IF NOT EXISTS dashboards
@@ -45,7 +46,8 @@ CREATE TABLE IF NOT EXISTS tasks
     start_date timestamp,
     end_date timestamp,
     fact_end_date timestamp,
-    duration float
+    duration float,
+    risk_level int
 );
 
 CREATE TABLE IF NOT EXISTS task_to_task

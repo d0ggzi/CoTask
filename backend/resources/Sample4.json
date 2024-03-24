@@ -1,0 +1,94 @@
+[
+    {
+        "id": 1,
+        "name": "Выбрать диван",
+        "role": "Семья",
+        "description": "Выбрать диван",
+        "start_date": "2024-03-24",
+        "end_date": "2024-03-29",
+        "duration": 24,
+        "parents": [
+            0
+        ],
+        "children": []
+    },
+    {
+        "id": 2,
+        "name": "Заказать диван",
+        "role": "Семья",
+        "description": "Заказать диван",
+        "start_date": "2024-03-24",
+        "end_date": "2024-03-29",
+        "duration": 1,
+        "parents": [
+            1
+        ],
+        "children": []
+    },
+    {
+        "id": 3,
+        "name": "Собрать диван",
+        "role": "Магазин",
+        "description": "Собрать диван",
+        "start_date": "2024-03-26",
+        "end_date": "2024-04-03",
+        "duration": 48,
+        "parents": [
+            2
+        ],
+        "children": []
+    },
+    {
+        "id": 4,
+        "name": "Доставить диван",
+        "role": "Магазин",
+        "description": "Доставить диван",
+        "start_date": "2024-03-29",
+        "end_date": "2024-04-05",
+        "duration": 32,
+        "parents": [
+            3
+        ],
+        "children": []
+    },
+    {
+        "id": 5,
+        "name": "Купить инструменты",
+        "role": "Семья",
+        "description": "Купить инструменты",
+        "start_date": "2024-03-27",
+        "end_date": "2024-04-05",
+        "duration": 2,
+        "parents": [
+            2
+        ],
+        "children": []
+    },
+    {
+        "id": 6,
+        "name": "Собрать каркас",
+        "role": "Семья",
+        "description": "Собрать каркас",
+        "start_date": "2024-04-01",
+        "end_date": "2024-04-08",
+        "duration": 6,
+        "parents": [
+            4,
+            5
+        ],
+        "children": []
+    },
+    {
+        "id": 7,
+        "name": "Собрать остальное",
+        "role": "Семья",
+        "description": "Собрать остальное",
+        "start_date": "2024-04-01",
+        "end_date": "2024-04-08",
+        "duration": 3,
+        "parents": [
+            6
+        ],
+        "children": []
+    }
+]

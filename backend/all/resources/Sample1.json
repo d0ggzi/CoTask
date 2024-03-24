@@ -1,0 +1,72 @@
+[
+ {
+  "id": 1,
+  "name": "Выбрать диван",
+  "role": "Семья",
+  "start_date": "2024-01-01",
+  "end_date": "2024-05-01",
+  "duration": 24,
+  "parents": [],
+  "children": [2]
+ },
+ {
+  "id": 2,
+  "name": "Заказать диван",
+  "role": "Семья",
+  "start_date": "2024-01-01",
+  "end_date": "2024-05-01",
+  "duration": 1,
+  "parents": [1],
+  "children": [3, 5]
+ },
+ {
+  "id": 3,
+  "name": "Собрать диван",
+  "role": "Магазин",
+  "start_date": "2024-03-01",
+  "end_date": "2024-10-01",
+  "duration": 48,
+  "parents": [2],
+  "children": [4]
+ },
+ {
+  "id": 4,
+  "name": "Доставить диван",
+  "role": "Магазин",
+  "start_date": "2024-05-01",
+  "end_date": "2024-12-01",
+  "duration": 32,
+  "parents": [3],
+  "children": [6]
+ },
+ {
+  "id": 5,
+  "name": "Купить инструменты",
+  "role": "Семья",
+  "start_date": "2024-03-01",
+  "end_date": "2024-12-01",
+  "duration": 2,
+  "parents": [2],
+  "children": [6]
+ },
+ {
+  "id": 6,
+  "name": "Собрать каркас",
+  "role": "Семья",
+  "start_date": "2024-09-01",
+  "end_date": "2024-15-01",
+  "duration": 6,
+  "parents": [4, 5],
+  "children": [7]
+ },
+ {
+  "id": 7,
+  "name": "Собрать остальное",
+  "role": "Семья",
+  "start_date": "2024-09-01",
+  "end_date": "2024-15-01",
+  "duration": 3,
+  "parents": [6],
+  "children": []
+ }
+]
