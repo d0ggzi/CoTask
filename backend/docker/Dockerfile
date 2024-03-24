@@ -12,6 +12,7 @@ RUN pip install poetry
 
 # Copy only requirements to cache them in docker layer
 COPY src ./src
+COPY resources ./resources
 COPY pyproject.toml poetry.lock ./
 
 
@@ -20,4 +21,5 @@ RUN poetry config virtualenvs.create false \
     && poetry install
 
 WORKDIR ./src
+#CMD ["python", "./excelParser.py"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

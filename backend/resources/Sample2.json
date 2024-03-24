@@ -1,0 +1,72 @@
+[
+ {
+  "id": 1,
+  "name": "Создать модель БД",
+  "role": "Разработчик",
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-15",
+  "duration": 36,
+  "parents": [],
+  "children": [2]
+ },
+ {
+  "id": 2,
+  "name": "Написать миграцию",
+  "role": "Разработчик",
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-15",
+  "duration": 24,
+  "parents": [1],
+  "children": [3]
+ },
+ {
+  "id": 3,
+  "name": "Написать ДБ слой",
+  "role": "Разработчик",
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-15",
+  "duration": 72,
+  "parents": [2],
+  "children": [5]
+ },
+ {
+  "id": 4,
+  "name": "Написать контроллеры",
+  "role": "Разработчик",
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-15",
+  "duration": 48,
+  "parents": [6],
+  "children": [5, 7]
+ },
+ {
+  "id": 5,
+  "name": "Написать сервисы",
+  "role": "Разработчик",
+  "start_date": "2024-01-08",
+  "end_date": "2024-01-24",
+  "duration": 96,
+  "parents": [3, 4],
+  "children": []
+ },
+ {
+  "id": 6,
+  "name": "Написать заглушки для бэка",
+  "role": "Фронтендер",
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-15",
+  "duration": 48,
+  "parents": [],
+  "children": [4]
+ },
+ {
+  "id": 7,
+  "name": "Написать фронт",
+  "role": "Фронтендер",
+  "start_date": "2024-01-11",
+  "end_date": "2024-01-16",
+  "duration": 24,
+  "parents": [4],
+  "children": []
+ }
+]

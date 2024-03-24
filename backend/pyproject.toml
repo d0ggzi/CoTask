@@ -17,6 +17,9 @@ psycopg = "^3.1.18"
 black = "^24.3.0"
 uvicorn = "^0.29.0"
 python-multipart = "^0.0.9"
+bcrypt = "^4.1.2"
+pandas = "^2.2.1"
+openpyxl = "^3.1.2"
 
 
 [build-system]
