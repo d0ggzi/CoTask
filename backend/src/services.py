@@ -11,8 +11,8 @@ oauth2schema = _security.OAuth2PasswordBearer(tokenUrl="/api/token")
 
 async def get_user_by_email(email: str) -> schemas.User | bool:
     try:
-        db_id, db_email, fullname, position, team_name = db.get_user(email)
-        user = schemas.User(id=db_id, email=db_email, fullname=fullname, position=position, team=team_name)
+        db_id, db_email, fullname, position, color, team_name = db.get_user(email)
+        user = schemas.User(id=db_id, email=db_email, fullname=fullname, position=position, color=color, team=team_name)
         return user
     except Exception as e:
         print(e)
@@ -59,6 +59,21 @@ async def get_teams():
     return db.get_teams()
 
 
+async def get_dashboards():
+    return db.get_dashboards()
+
+async def get_dash_tasks(dash_name, user: schemas.User):
+    tasks = []
+    dash_id = db.get_dash_id_by_name(dash_name)
+    tasks_from_db = db.get_dash_tasks(dash_id)
+
+    for el in tasks_from_db:
+        task = schemas.Task(name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
+                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9])
+        tasks.append(task)
+
+    return tasks
+
 async def get_team_tasks(user: schemas.User):
     tasks = []
 
@@ -67,8 +82,7 @@ async def get_team_tasks(user: schemas.User):
 
     for el in tasks_from_db:
         task = schemas.Task(name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
-                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8])
-        print(task)
+                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9])
         tasks.append(task)
 
     return tasks

@@ -32,6 +32,7 @@ def parseExcelTasks(excelPath: str):
         team_id = db.create_team(item["role"] + name + rand_hash, dash_id)
         task_id = db.create_task(item["name"], "", item["start_date"], item["end_date"], item["duration"])
         db.create_connection_task_team(team_id, task_id)
+        db.create_connection_task_dash(dash_id, task_id)
         indexes[item["id"]] = task_id
     for item in data:
         cur_index = indexes[item["id"]]

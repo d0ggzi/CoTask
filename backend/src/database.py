@@ -1,3 +1,4 @@
+import random
 from typing import Dict, Any, List, Tuple
 
 import psycopg2
@@ -28,10 +29,10 @@ class SQL:
         )
         self.cursor = self.conn.cursor()
 
-    def get_user(self, email: str) -> tuple[Any, Any, Any, Any, Any] | bool:
+    def get_user(self, email: str):
         with self.conn:
             self.cursor.execute(
-                "SELECT id, email, fullname, position FROM users WHERE email=%s", (email,)
+                "SELECT id, email, fullname, position, color FROM users WHERE email=%s", (email,)
             )
             result = self.cursor.fetchall()
             if bool(len(result)):
@@ -39,7 +40,7 @@ class SQL:
                     "SELECT name FROM teams t JOIN user_team o ON t.id = o.team_id WHERE o.user_id = %s", (result[0][0],)
                 )
                 team_name = self.cursor.fetchall()[0][0]
-                return result[0][0], result[0][1], result[0][2], result[0][3], team_name   # found
+                return result[0][0], result[0][1], result[0][2], result[0][3], result[0][4], team_name   # found
         return True  # not found
 
     def reg_user(self, email: str, password: str, fullname: str, position: str) -> bool | int:
@@ -50,10 +51,11 @@ class SQL:
             )
             result = self.cursor.fetchall()
             if not bool(len(result)):
+                random_color = "#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)])
                 self.cursor.execute(
-                    "INSERT INTO users (email, password, fullname, position) VALUES (%s, %s, %s, %s) "
+                    "INSERT INTO users (email, password, fullname, position, color) VALUES (%s, %s, %s, %s, %s) "
                     "RETURNING id",
-                    (email, password, fullname, position),
+                    (email, password, fullname, position, random_color),
                 )
                 user_id = int(self.cursor.fetchall()[0][0])
                 return user_id
@@ -133,8 +135,8 @@ class SQL:
     def create_task(self, task_name: str, description: str, start_date, end_date, duration) -> bool | int:
         with self.conn:
             self.cursor.execute(
-                "INSERT INTO tasks (name, current_status, description, complete_percent, start_date, end_date, duration) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
-                (task_name, 'backlog', description, 0, start_date, end_date, duration)
+                "INSERT INTO tasks (name, current_status, description, complete_percent, start_date, end_date, duration, risk_level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                (task_name, 'backlog', description, 0, start_date, end_date, duration, 0)
             )
             result = self.cursor.fetchall()
 
@@ -147,6 +149,16 @@ class SQL:
                 (
                     task_id,
                     team_id
+                ),
+            )
+
+    def create_connection_task_dash(self, dash_id, task_id):
+        with self.conn:
+            self.cursor.execute(
+                "INSERT INTO task_dashboards (task_id, dash_id) VALUES (%s, %s)",
+                (
+                    task_id,
+                    dash_id
                 ),
             )
 
@@ -168,6 +180,23 @@ class SQL:
             team_id = int(self.cursor.fetchall()[0][0])
             return team_id
 
+
+    def get_dash_id_by_name(self, dash_name):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT id FROM dashboards where name = %s", (dash_name,)
+            )
+            team_id = int(self.cursor.fetchall()[0][0])
+            return team_id
+
+    def get_dash_tasks(self, dash_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT * FROM tasks t JOIN task_dashboards o ON t.id = o.task_id WHERE o.dash_id = %s", (dash_id,)
+            )
+            result = self.cursor.fetchall()
+            return result
+
     def get_team_tasks(self, team_id):
         with self.conn:
             self.cursor.execute(
@@ -183,6 +212,56 @@ class SQL:
             )
             result = self.cursor.fetchall()
             return result
+
+    def get_dashboards(self):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT name FROM dashboards"
+            )
+            result = self.cursor.fetchall()
+            return result
+
+    def get_tasks(self):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT * FROM tasks t JOIN task_team o ON t.id = o.task_id"
+            )
+            result = self.cursor.fetchall()
+            return result
+
+    def get_parents(self, task_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT first_task_id FROM task_to_task WHERE second_task_id = %s", (task_id,)
+            )
+            result = self.cursor.fetchall()
+            return result
+
+
+    def get_team_id_by_team_name(self, team_name):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT id FROM teams where name = %s", (team_name,)
+            )
+            team_id = int(self.cursor.fetchall()[0][0])
+            return team_id
+
+    def get_email_by_team(self, team_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT email FROM users u JOIN user_team t ON u.id = t.user_id WHERE team_id = %s", (team_id,)
+            )
+            result = self.cursor.fetchall()
+            return result
+
+    def update_task(
+            self, task_id, task_risk_level
+    ):
+        with self.conn:
+            self.cursor.execute(
+                "UPDATE tasks SET risk_level=%s WHERE id=%s",
+                (task_risk_level, task_id),
+            )
     #
     # def get_task_lists(self, user_id: int) -> (bool, Dict[Any, Any]):
     #     with self.conn:

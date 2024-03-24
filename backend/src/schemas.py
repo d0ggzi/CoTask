@@ -17,6 +17,7 @@ class UserCreate(_UserBase):
 
 class User(_UserBase):
     id: int
+    color: str
 
 
 class Dashboard(_pydantic.BaseModel):
@@ -32,6 +33,7 @@ class Task(_pydantic.BaseModel):
     end_date: _dt.datetime
     fact_end_date: Optional[_dt.datetime] = None
     duration: float
+    risk_level: int
 
 
 class Team(_pydantic.BaseModel):
