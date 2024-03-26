@@ -77,12 +77,12 @@ async def get_user(user=fastapi.Depends(authenticate_user)):
     return user
 
 
-@app.get("/api/data/roadmap")
+@app.get("/api/data/roadmap", response_model=list[_schemas.Task])
 async def get_roadmap(project_name: str, user=fastapi.Depends(_services.get_current_user)):
     return await _services.get_dash_tasks(project_name, user)
 
 
-@app.get("/api/data/tasks")
+@app.get("/api/data/tasks", response_model=list[_schemas.Task])
 async def get_tasks(user=fastapi.Depends(_services.get_current_user)):
     return await _services.get_team_tasks(user)
 
@@ -93,7 +93,7 @@ async def get_teams():
 
 
 @app.get("/api/data/dashboards")
-async def get_teams():
+async def get_dashboards():
     return await _services.get_dashboards()
 
 @app.get("/api/parse")

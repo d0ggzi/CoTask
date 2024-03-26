@@ -24,6 +24,8 @@ services:
     ports:
       - "8000:8000"
     restart: always
+    environment:
+      - POSTGRES_HOST=postgres_db
     networks:
       - app-network
     depends_on:

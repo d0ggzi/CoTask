@@ -62,17 +62,21 @@ async def get_teams():
 async def get_dashboards():
     return db.get_dashboards()
 
+
 async def get_dash_tasks(dash_name, user: schemas.User):
     tasks = []
     dash_id = db.get_dash_id_by_name(dash_name)
     tasks_from_db = db.get_dash_tasks(dash_id)
 
     for el in tasks_from_db:
-        task = schemas.Task(name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
-                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9])
+        parents = [el[0] for el in db.get_parents(el[0])]
+        task = schemas.Task(id=el[0], name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
+                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9],
+                            parents=parents)
         tasks.append(task)
 
     return tasks
+
 
 async def get_team_tasks(user: schemas.User):
     tasks = []
@@ -81,8 +85,10 @@ async def get_team_tasks(user: schemas.User):
     tasks_from_db = db.get_team_tasks(team_id)
 
     for el in tasks_from_db:
-        task = schemas.Task(name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
-                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9])
+        parents = [el[0] for el in db.get_parents(el[0])]
+        task = schemas.Task(id=el[0], name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
+                            start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9],
+                            parents=parents)
         tasks.append(task)
 
     return tasks

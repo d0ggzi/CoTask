@@ -25,6 +25,7 @@ class Dashboard(_pydantic.BaseModel):
 
 
 class Task(_pydantic.BaseModel):
+    id: int
     name: str
     current_status: str
     complete_percent: int
@@ -34,6 +35,7 @@ class Task(_pydantic.BaseModel):
     fact_end_date: Optional[_dt.datetime] = None
     duration: float
     risk_level: int
+    parents: list[int]
 
 
 class Team(_pydantic.BaseModel):
