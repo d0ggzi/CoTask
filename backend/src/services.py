@@ -65,11 +65,14 @@ async def get_dashboards():
 
 
 async def set_resp_for_task(task_id, user):
-    try:
+    if not db.user_is_resp_for_task(task_id, user.id):
+        team_id = db.get_team_by_user_id(user.id)
+        if not db.get_team_by_task_id(task_id) == team_id:
+            raise fastapi.HTTPException(status_code=403, detail="User is in another team")
         db.set_resp_for_task(task_id, user.id)
         return Response(status_code=200)
-    except Exception as e:
-        return Response(status_code=404, content=str(e))
+    else:
+        raise fastapi.HTTPException(status_code=403, detail="User is already responsible for this task")
 
 
 async def set_complete_percent_on_task(task_id, complete_percent, user):
@@ -77,10 +80,10 @@ async def set_complete_percent_on_task(task_id, complete_percent, user):
         db.set_complete_percent_on_task(task_id, complete_percent)
         return Response(status_code=200)
     else:
-        raise fastapi.HTTPException(status_code=401, detail="User is not responsible for this task")
+        raise fastapi.HTTPException(status_code=403, detail="User is not responsible for this task")
 
 
-async def get_dash_tasks(dash_name, user: schemas.User):
+async def get_dash_tasks(dash_name):
     tasks = []
     dash_id = db.get_dash_id_by_name(dash_name)
     tasks_from_db = db.get_dash_tasks(dash_id)

@@ -79,7 +79,7 @@ async def get_user(user=fastapi.Depends(authenticate_user)):
 
 @app.get("/api/data/roadmap", response_model=list[_schemas.Task])
 async def get_roadmap(project_name: str, user=fastapi.Depends(_services.get_current_user)):
-    return await _services.get_dash_tasks(project_name, user)
+    return await _services.get_dash_tasks(project_name)
 
 
 @app.get("/api/data/tasks", response_model=list[_schemas.Task])
@@ -93,7 +93,7 @@ async def set_resp_for_task(task_id: int, user=fastapi.Depends(_services.get_cur
 
 
 @app.put("/api/data/tasks")
-async def set_resp_for_task(task_id: int, complete_percent: int, user=fastapi.Depends(_services.get_current_user)):
+async def set_complete_percent_for_task(task_id: int, complete_percent: int, user=fastapi.Depends(_services.get_current_user)):
     return await _services.set_complete_percent_on_task(task_id, complete_percent, user)
 
 

@@ -278,6 +278,14 @@ class SQL:
             result = self.cursor.fetchall()
             return result
 
+    def get_team_by_task_id(self, task_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT team_id FROM task_team where task_id = %s", (task_id,)
+            )
+            team_id = int(self.cursor.fetchall()[0][0])
+            return team_id
+
     def user_is_resp_for_task(self, task_id, user_id):
         with self.conn:
             self.cursor.execute(
