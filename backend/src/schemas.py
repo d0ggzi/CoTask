@@ -36,6 +36,7 @@ class Task(_pydantic.BaseModel):
     duration: float
     risk_level: int
     parents: list[int]
+    responsibles: list[User]
 
 
 class Team(_pydantic.BaseModel):

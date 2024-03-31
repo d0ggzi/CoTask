@@ -1,8 +1,8 @@
 import fastapi
 import fastapi.security as _security
 from fastapi import Security, BackgroundTasks
-from BackgroundProcessor import check_Tasks_deadlines
-import services as _services, schemas as _schemas
+from src.utils.BackgroundProcessor import check_Tasks_deadlines
+import src.services as _services, src.schemas as _schemas
 from fastapi.middleware.cors import CORSMiddleware
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -87,6 +87,16 @@ async def get_tasks(user=fastapi.Depends(_services.get_current_user)):
     return await _services.get_team_tasks(user)
 
 
+@app.post("/api/data/tasks")
+async def set_resp_for_task(task_id: int, user=fastapi.Depends(_services.get_current_user)):
+    return await _services.set_resp_for_task(task_id, user)
+
+
+@app.put("/api/data/tasks")
+async def set_resp_for_task(task_id: int, complete_percent: int, user=fastapi.Depends(_services.get_current_user)):
+    return await _services.set_complete_percent_on_task(task_id, complete_percent, user)
+
+
 @app.get("/api/data/teams")
 async def get_teams():
     return await _services.get_teams()
@@ -98,5 +108,5 @@ async def get_dashboards():
 
 @app.get("/api/parse")
 async def parse():
-    from excelParser import parseExcelTasks
-    parseExcelTasks("../resources/Sample4.xlsx")
+    from src.utils.excelParser import parseExcelTasks
+    parseExcelTasks("./resources/Sample4.xlsx")

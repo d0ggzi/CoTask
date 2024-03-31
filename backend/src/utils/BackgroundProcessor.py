@@ -1,7 +1,6 @@
-from MessageSender import send_message
-from RiskAlgorithm import process_tasks_deadline
-from RiskAlgorithm import TaskForAlgo
-from database import db
+from src.utils.MessageSender import send_message
+from src.utils.RiskAlgorithm import process_tasks_deadline, TaskForAlgo
+from src.database import db
 import copy
 
 

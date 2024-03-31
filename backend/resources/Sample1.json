@@ -2,26 +2,20 @@
     {
         "id": 1,
         "name": "Выбрать диван",
-        "role": "Семья",
+        "role": "Семья ",
         "start_date": "2024-01-01",
         "end_date": "2024-01-05",
         "duration": 24,
-        "parents": [
-            0
-        ],
-        "children": []
+        "parents": "0"
     },
     {
         "id": 2,
         "name": "Заказать диван",
-        "role": "Семья",
+        "role": "Семья ",
         "start_date": "2024-01-01",
         "end_date": "2024-01-05",
         "duration": 1,
-        "parents": [
-            1
-        ],
-        "children": []
+        "parents": "1"
     },
     {
         "id": 3,
@@ -30,10 +24,7 @@
         "start_date": "2024-01-03",
         "end_date": "2024-01-10",
         "duration": 48,
-        "parents": [
-            2
-        ],
-        "children": []
+        "parents": "2"
     },
     {
         "id": 4,
@@ -42,46 +33,33 @@
         "start_date": "2024-01-05",
         "end_date": "2024-01-12",
         "duration": 32,
-        "parents": [
-            3
-        ],
-        "children": []
+        "parents": "3"
     },
     {
         "id": 5,
         "name": "Купить инструменты",
-        "role": "Семья",
+        "role": "Семья ",
         "start_date": "2024-01-03",
         "end_date": "2024-01-12",
         "duration": 2,
-        "parents": [
-            2
-        ],
-        "children": []
+        "parents": "2"
     },
     {
         "id": 6,
         "name": "Собрать каркас",
-        "role": "Семья",
+        "role": "Семья ",
         "start_date": "2024-01-09",
         "end_date": "2024-01-15",
         "duration": 6,
-        "parents": [
-            4,
-            5
-        ],
-        "children": []
+        "parents": "4,5"
     },
     {
         "id": 7,
         "name": "Собрать остальное",
-        "role": "Семья",
+        "role": "Семья ",
         "start_date": "2024-01-09",
         "end_date": "2024-01-15",
         "duration": 3,
-        "parents": [
-            6
-        ],
-        "children": []
+        "parents": "6"
     }
 ]

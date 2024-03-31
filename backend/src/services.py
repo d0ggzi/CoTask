@@ -1,10 +1,11 @@
 import fastapi
 import fastapi.security as _security
+from fastapi import Response
 
-from database import db
-import schemas
+from src.database import db
+import src.schemas as schemas
 import jwt
-from config import settings
+from src.config import settings
 
 oauth2schema = _security.OAuth2PasswordBearer(tokenUrl="/api/token")
 
@@ -63,6 +64,22 @@ async def get_dashboards():
     return db.get_dashboards()
 
 
+async def set_resp_for_task(task_id, user):
+    try:
+        db.set_resp_for_task(task_id, user.id)
+        return Response(status_code=200)
+    except Exception as e:
+        return Response(status_code=404, content=str(e))
+
+
+async def set_complete_percent_on_task(task_id, complete_percent, user):
+    if db.user_is_resp_for_task(task_id, user.id):
+        db.set_complete_percent_on_task(task_id, complete_percent)
+        return Response(status_code=200)
+    else:
+        raise fastapi.HTTPException(status_code=401, detail="User is not responsible for this task")
+
+
 async def get_dash_tasks(dash_name, user: schemas.User):
     tasks = []
     dash_id = db.get_dash_id_by_name(dash_name)
@@ -70,9 +87,16 @@ async def get_dash_tasks(dash_name, user: schemas.User):
 
     for el in tasks_from_db:
         parents = [el[0] for el in db.get_parents(el[0])]
+
+        users = []
+        for resp in db.get_responsible_users_by_task(el[0]):
+            user = schemas.User(id=resp[0], email=resp[1], fullname=resp[2], position=resp[3], color=resp[4],
+                                team=resp[5])
+            users.append(user)
+
         task = schemas.Task(id=el[0], name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
                             start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9],
-                            parents=parents)
+                            parents=parents, responsibles=users)
         tasks.append(task)
 
     return tasks
@@ -86,9 +110,15 @@ async def get_team_tasks(user: schemas.User):
 
     for el in tasks_from_db:
         parents = [el[0] for el in db.get_parents(el[0])]
+
+        users = []
+        for resp in db.get_responsible_users_by_task(el[0]):
+            user = schemas.User(id=resp[0], email=resp[1], fullname=resp[2], position=resp[3], color=resp[4], team=resp[5])
+            users.append(user)
+
         task = schemas.Task(id=el[0], name=el[1], current_status=el[2], complete_percent=el[3], description=el[4],
                             start_date=el[5], end_date=el[6], fact_end_date=el[7], duration=el[8], risk_level=el[9],
-                            parents=parents)
+                            parents=parents, responsibles=users)
         tasks.append(task)
 
     return tasks

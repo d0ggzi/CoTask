@@ -3,7 +3,7 @@ import string
 
 import pandas as pd
 import json
-from database import db
+from src.database import db
 
 
 def parseExcelTasks(excelPath: str):
@@ -45,7 +45,7 @@ def parseExcelTasks(excelPath: str):
         item["children"] = [child_id for child_id, child in id_to_obj.items() if
                            str(item["id"]) in child.get("parents", [])]
 
-    with open(f'../resources/{name}.json', 'w', encoding='utf-8') as f:
+    with open(f'./resources/{name}.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
@@ -62,4 +62,4 @@ def parse_parents(parents_str):
 
 
 if __name__ == '__main__':
-    parseExcelTasks("../resources/Sample1.xlsx")
+    parseExcelTasks("../../resources/Sample1.xlsx")

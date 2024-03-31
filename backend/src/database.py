@@ -2,7 +2,7 @@ import random
 from typing import Dict, Any, List, Tuple
 
 import psycopg2
-from config import settings
+from src.config import settings
 import bcrypt
 
 
@@ -189,6 +189,14 @@ class SQL:
             team_id = int(self.cursor.fetchall()[0][0])
             return team_id
 
+
+    def set_resp_for_task(self, task_id, user_id):
+        with self.conn:
+            self.cursor.execute(
+                "INSERT INTO user_task (task_id, user_id) VALUES (%s, %s)", (task_id, user_id)
+            )
+
+
     def get_dash_tasks(self, dash_id):
         with self.conn:
             self.cursor.execute(
@@ -237,7 +245,6 @@ class SQL:
             result = self.cursor.fetchall()
             return result
 
-
     def get_team_id_by_team_name(self, team_name):
         with self.conn:
             self.cursor.execute(
@@ -259,9 +266,36 @@ class SQL:
     ):
         with self.conn:
             self.cursor.execute(
-                "UPDATE tasks SET risk_level=%s WHERE id=%s",
+                "UPDATE tasks SET risk_level = %s WHERE id=%s",
                 (task_risk_level, task_id),
             )
+
+    def get_responsible_users_by_task(self, task_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT u.id, email, fullname, position, color, teams.name FROM users u JOIN user_task t ON u.id = t.user_id JOIN user_team q ON u.id = q.user_id JOIN teams ON q.team_id = teams.id WHERE task_id = %s", (task_id,)
+            )
+            result = self.cursor.fetchall()
+            return result
+
+    def user_is_resp_for_task(self, task_id, user_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT user_id FROM user_task WHERE user_id = %s AND task_id = %s", (user_id, task_id)
+            )
+            result = self.cursor.fetchall()
+            if bool(len(result)):
+                return True
+        return False
+
+    def set_complete_percent_on_task(self, task_id, complete_percent):
+        with self.conn:
+            self.cursor.execute(
+                "UPDATE tasks SET complete_percent = %s WHERE id=%s",
+                (complete_percent, task_id),
+            )
+
+
     #
     # def get_task_lists(self, user_id: int) -> (bool, Dict[Any, Any]):
     #     with self.conn:
