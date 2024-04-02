@@ -66,8 +66,10 @@ class SQL:
             self.cursor.execute(
                 "SELECT id FROM teams WHERE name=%s", (team_name,)
             )
-            result = int(self.cursor.fetchall()[0][0])
-            return result
+            result = self.cursor.fetchall()
+            if not bool(len(result)):
+                return -1
+            return int(result[0][0])
 
     def create_user_team(self, user_id, team_id):
         with self.conn:

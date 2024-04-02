@@ -24,6 +24,8 @@ async def create_user(user: schemas.UserCreate):
     user_db = db.reg_user(email=user.email, password=user.hashed_password, fullname=user.fullname,
                           position=user.position)
     team_id = db.get_team_by_name(user.team)
+    if team_id == -1:
+        raise fastapi.HTTPException(status_code=403, detail="No such team")
     db.create_user_team(user_db, team_id)
     return user_db
 

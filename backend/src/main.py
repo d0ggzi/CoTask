@@ -1,12 +1,21 @@
 import fastapi
 import fastapi.security as _security
-from fastapi import Security, BackgroundTasks
+from fastapi import Security, BackgroundTasks, Response, Request
 from src.utils.BackgroundProcessor import check_Tasks_deadlines
 import src.services as _services, src.schemas as _schemas
 from fastapi.middleware.cors import CORSMiddleware
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = fastapi.FastAPI()
+
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        print(f"Exception raised: {e}")
+        return Response("Internal server error", status_code=500)
+
+app.middleware('http')(catch_exceptions_middleware)
 
 origins = ['*']
 
