@@ -19,7 +19,7 @@ def send_message(mes: str, email: str):
         server = smtplib.SMTP_SSL('smtp.mail.ru', 465)
         server.login(sender, password)
         text = msg.as_string()
-        server.sendmail(sender, email, text)
+        # server.sendmail(sender, email, text)
         server.quit()
     except Exception as e:
         print(f"Error occured while sending to {email}")

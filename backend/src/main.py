@@ -60,9 +60,9 @@ async def create_user(
     if db_user:
         raise fastapi.HTTPException(status_code=400, detail="Email already in use")
 
-    user = await _services.create_user(user)
+    user: _schemas.User = await _services.create_user(user)
 
-    return user
+    return await _services.create_token(user)
 
 
 @app.post("/api/token")

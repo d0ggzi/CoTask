@@ -43,7 +43,7 @@ class SQL:
                 return result[0][0], result[0][1], result[0][2], result[0][3], result[0][4], team_name   # found
         return True  # not found
 
-    def reg_user(self, email: str, password: str, fullname: str, position: str) -> bool | int:
+    def reg_user(self, email: str, password: str, fullname: str, position: str, color: str) -> bool | int:
         password = hash_password(password)
         with self.conn:
             self.cursor.execute(
@@ -51,11 +51,10 @@ class SQL:
             )
             result = self.cursor.fetchall()
             if not bool(len(result)):
-                random_color = "#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)])
                 self.cursor.execute(
                     "INSERT INTO users (email, password, fullname, position, color) VALUES (%s, %s, %s, %s, %s) "
                     "RETURNING id",
-                    (email, password, fullname, position, random_color),
+                    (email, password, fullname, position, color),
                 )
                 user_id = int(self.cursor.fetchall()[0][0])
                 return user_id

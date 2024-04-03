@@ -1,3 +1,5 @@
+import random
+
 import fastapi
 import fastapi.security as _security
 from fastapi import Response
@@ -21,13 +23,17 @@ async def get_user_by_email(email: str) -> schemas.User | bool:
 
 
 async def create_user(user: schemas.UserCreate):
-    user_db = db.reg_user(email=user.email, password=user.hashed_password, fullname=user.fullname,
-                          position=user.position)
     team_id = db.get_team_by_name(user.team)
     if team_id == -1:
         raise fastapi.HTTPException(status_code=403, detail="No such team")
-    db.create_user_team(user_db, team_id)
-    return user_db
+    random_color = "#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)])
+    user_id = db.reg_user(email=user.email, password=user.hashed_password, fullname=user.fullname,
+                          position=user.position, color=random_color)
+    db.create_user_team(user_id, team_id)
+
+    user_res = schemas.User(id=user_id, email=user.email, fullname=user.fullname, position=user.position, color=random_color, team=user.team)
+
+    return user_res
 
 
 async def authenticate_user(email: str, password: str) -> schemas.User | bool:
