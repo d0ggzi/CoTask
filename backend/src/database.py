@@ -37,10 +37,11 @@ class SQL:
             result = self.cursor.fetchall()
             if bool(len(result)):
                 self.cursor.execute(
-                    "SELECT name FROM teams t JOIN user_team o ON t.id = o.team_id WHERE o.user_id = %s", (result[0][0],)
+                    "SELECT name FROM teams t JOIN user_team o ON t.id = o.team_id WHERE o.user_id = %s",
+                    (result[0][0],)
                 )
                 team_name = self.cursor.fetchall()[0][0]
-                return result[0][0], result[0][1], result[0][2], result[0][3], result[0][4], team_name   # found
+                return result[0][0], result[0][1], result[0][2], result[0][3], result[0][4], team_name  # found
         return True  # not found
 
     def reg_user(self, email: str, password: str, fullname: str, position: str, color: str) -> bool | int:
@@ -60,6 +61,18 @@ class SQL:
                 return user_id
         return False
 
+    def edit_user(self, email: str, password: str, fullname: str, position: str, user_id: int) -> str:
+        password = hash_password(password)
+        with self.conn:
+            self.cursor.execute(
+                "UPDATE users SET email = %s, password = %s, fullname = %s, position = %s WHERE id = %s "
+                "RETURNING color",
+                (email, password, fullname, position, user_id),
+            )
+            color = self.cursor.fetchall()[0][0]
+            return color
+        return False
+
     def get_team_by_name(self, team_name):
         with self.conn:
             self.cursor.execute(
@@ -74,6 +87,16 @@ class SQL:
         with self.conn:
             self.cursor.execute(
                 "INSERT INTO user_team (user_id, team_id) VALUES (%s, %s)",
+                (
+                    user_id,
+                    team_id
+                ),
+            )
+
+    def delete_user_team(self, user_id, team_id):
+        with self.conn:
+            self.cursor.execute(
+                "DELETE FROM user_team WHERE user_id = %s AND team_id = %s",
                 (
                     user_id,
                     team_id
@@ -181,7 +204,6 @@ class SQL:
             team_id = int(self.cursor.fetchall()[0][0])
             return team_id
 
-
     def get_dash_id_by_name(self, dash_name):
         with self.conn:
             self.cursor.execute(
@@ -190,13 +212,11 @@ class SQL:
             team_id = int(self.cursor.fetchall()[0][0])
             return team_id
 
-
     def set_resp_for_task(self, task_id, user_id):
         with self.conn:
             self.cursor.execute(
                 "INSERT INTO user_task (task_id, user_id) VALUES (%s, %s)", (task_id, user_id)
             )
-
 
     def get_dash_tasks(self, dash_id):
         with self.conn:
@@ -210,6 +230,15 @@ class SQL:
         with self.conn:
             self.cursor.execute(
                 "SELECT * FROM tasks t JOIN task_team o ON t.id = o.task_id WHERE o.team_id = %s", (team_id,)
+            )
+            result = self.cursor.fetchall()
+            return result
+
+    def get_user_tasks(self, user_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT * from tasks JOIN user_task ON tasks.id = user_task.task_id WHERE user_task.user_id = %s",
+                (user_id,)
             )
             result = self.cursor.fetchall()
             return result
@@ -274,7 +303,8 @@ class SQL:
     def get_responsible_users_by_task(self, task_id):
         with self.conn:
             self.cursor.execute(
-                "SELECT u.id, email, fullname, position, color, teams.name FROM users u JOIN user_task t ON u.id = t.user_id JOIN user_team q ON u.id = q.user_id JOIN teams ON q.team_id = teams.id WHERE task_id = %s", (task_id,)
+                "SELECT u.id, email, fullname, position, color, teams.name FROM users u JOIN user_task t ON u.id = t.user_id JOIN user_team q ON u.id = q.user_id JOIN teams ON q.team_id = teams.id WHERE task_id = %s",
+                (task_id,)
             )
             result = self.cursor.fetchall()
             return result
@@ -297,6 +327,16 @@ class SQL:
                 return True
         return False
 
+    def team_is_resp_for_task(self, task_id, team_id):
+        with self.conn:
+            self.cursor.execute(
+                "SELECT team_id FROM task_team WHERE team_id = %s AND task_id = %s", (team_id, task_id)
+            )
+            result = self.cursor.fetchall()
+            if bool(len(result)):
+                return True
+        return False
+
     def set_complete_percent_on_task(self, task_id, complete_percent):
         with self.conn:
             self.cursor.execute(
@@ -304,7 +344,26 @@ class SQL:
                 (complete_percent, task_id),
             )
 
+    def set_fact_end_date(self, task_id, date):
+        with self.conn:
+            self.cursor.execute(
+                "UPDATE tasks SET fact_end_date = %s WHERE id=%s",
+                (date, task_id),
+            )
 
+    def set_current_status_on_task(self, task_id, current_status):
+        with self.conn:
+            self.cursor.execute(
+                "UPDATE tasks SET current_status = %s WHERE id=%s",
+                (current_status, task_id),
+            )
+
+    def set_description_on_task(self, task_id, description):
+        with self.conn:
+            self.cursor.execute(
+                "UPDATE tasks SET description = %s WHERE id=%s",
+                (description, task_id),
+            )
     #
     # def get_task_lists(self, user_id: int) -> (bool, Dict[Any, Any]):
     #     with self.conn:

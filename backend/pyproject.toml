@@ -21,6 +21,7 @@ bcrypt = "^4.1.2"
 pandas = "^2.2.1"
 openpyxl = "^3.1.2"
 apscheduler = "^3.10.4"
+datetime = "^5.5"
 
 
 [build-system]

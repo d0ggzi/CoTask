@@ -42,3 +42,17 @@ class Task(_pydantic.BaseModel):
 class Team(_pydantic.BaseModel):
     name: str
 
+
+class UpdateCompletePercent(_pydantic.BaseModel):
+    task_id: int
+    complete_percent: int
+
+
+class UpdateCurrentStatus(_pydantic.BaseModel):
+    task_id: int
+    current_status: str
+
+
+class UpdateDescription(_pydantic.BaseModel):
+    task_id: int
+    description: str
