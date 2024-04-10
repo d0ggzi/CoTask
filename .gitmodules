@@ -1,0 +1,3 @@
+[submodule "coTask"]
+	path = frontend
+	url = https://github.com/Ebeerz/coTask
