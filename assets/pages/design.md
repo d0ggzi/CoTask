@@ -18,6 +18,3 @@
 
 ![mobile-menu.png](/assets/img/mobile-menu.png)
 
--------------------------------
-
-![cards-type.png](/assets/img/card-status.png)
